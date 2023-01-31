@@ -1,7 +1,10 @@
 import PropTypes from "prop-types";
-import { Link } from "react-router-dom"
+import { Link } from "react-router-dom";
+import { useContext } from "react";
+import GithubContext from "../../context/github/GithubContext";
 
 function UserItem({ user: { login, avatar_url} }) {
+    const {user, getUser} = useContext(GithubContext);
   return (
     <div className="card shadow-md compact side bg-base-100">
         <div className="flex-row items-center space-x-4 card-body">
@@ -14,7 +17,7 @@ function UserItem({ user: { login, avatar_url} }) {
             </div>
             <div>
                 <div className="card-title">{login}</div>
-                <Link className="text-base-content text-opacity-40" to={`/users/${login}`}>Visit Profile</Link>
+                <Link onClick={() => {getUser(login)}} className="text-base-content text-opacity-40" to={`/user/${login}`}>Visit Profile</Link>
             </div>
         </div>
     </div>
