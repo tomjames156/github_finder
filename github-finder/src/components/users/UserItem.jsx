@@ -17,7 +17,7 @@ function UserItem({ user: { login, avatar_url} }) {
             </div>
             <div>
                 <div className="card-title">{login}</div>
-                <Link onClick={() => {getUser(login)}} className="text-base-content text-opacity-40" to={`/user/${login}`}>Visit Profile</Link>
+                <Link className="text-base-content text-opacity-40" to={`/user/${login}`}>Visit Profile</Link>
             </div>
         </div>
     </div>
