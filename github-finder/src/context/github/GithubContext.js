@@ -9,6 +9,7 @@ export const GithubProvider = ({children}) => {
     const intialState = {
         users: [],
         user: {},
+        repos: [],
         isLoading: false
     }
 
@@ -32,10 +33,10 @@ export const GithubProvider = ({children}) => {
     }
 
     // Get a single user
-    const getUser = async (text) =>{
+    const getUser = async (user) =>{
         setIsLoading()
-        const response = await fetch(`${GITHUB_API_LINK}/users/${text}`)
-        if(response.status == "404"){
+        const response = await fetch(`${GITHUB_API_LINK}/users/${user}`)
+        if(response.status === "404"){
             window.location = "/notfound"
         }else{
             const data = await response.json()
@@ -43,6 +44,27 @@ export const GithubProvider = ({children}) => {
             dispatch({
                 type: 'GET_USER',
                 payload: data,
+            })
+        }
+    }
+
+    // Get user repos
+    const getUserRepos = async (user) => {
+        setIsLoading();
+        const params = new URLSearchParams({
+            sort: 'created',
+            per_page: 10
+        });
+
+        const response = await fetch(`${GITHUB_API_LINK}/users/${user}/repos?${params}`);
+        if(response.status === "404"){
+            window.location = "/notfound"
+        }else{
+            const repos = await response.json()
+
+            dispatch({
+                type: "GET_REPOS",
+                payload: repos
             })
         }
     }
@@ -59,9 +81,11 @@ export const GithubProvider = ({children}) => {
             users: state.users, 
             isLoading: state.isLoading,
             user: state.user,
+            repos: state.repos,
             searchUsers,
             clearUsers,
-            getUser}}>
+            getUser,
+            getUserRepos}}>
             {children}
         </GithubContext.Provider>
     )
