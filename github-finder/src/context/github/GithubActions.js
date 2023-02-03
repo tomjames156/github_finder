@@ -1,7 +1,7 @@
 import axios from "axios"
 const GITHUB_API_LINK = process.env.REACT_APP_GITHUB_API_LINK;
 
-const github = axios({
+const github = axios.create({
     baseURL: GITHUB_API_LINK
 })
 
@@ -17,28 +17,10 @@ export const searchUsers = async (text) => {
 
 
 // get a single user
-export const getUser = async (user) => {
-    const response = await fetch(`${GITHUB_API_LINK}/users/${user}`);
-    if(response.status === "404"){
-        window.location = "/notfound"
-    }else{
-        const data = await response.json()
-        return data
-    }
-}
-
-
-// get the users repositories
-export const getUserRepos = async (user) => {
-    const params = new URLSearchParams({
-        sort: "created",
-        per_page: 10
-    })
-    const response = await fetch(`${GITHUB_API_LINK}/users/${user}/repos?${params}`)
-    if(response.status === "404"){
-        window.location = "/notfound"
-    }else{
-        const data = await response.json();
-        return data;
-    }
+export const getUserAndRepos = async(username) => {
+    const [user, repos] = await Promise.all([
+        github.get(`/users/${username}`),
+        github.get(`/users/${username}/repos`)
+    ])
+    return {user: user.data, repos: repos.data}
 }
