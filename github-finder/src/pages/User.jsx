@@ -4,10 +4,22 @@ import { FaCodepen, FaStore, FaUserFriends, FaUsers } from "react-icons/fa";
 import Spinner from "../components/layout/Spinner";
 import RepoList from "../components/repos/RepoList";
 import GithubContext from "../context/github/GithubContext";
+import {getUser, getUserRepos} from "../context/github/GithubActions"
 
 function User() {
-  const {getUser, user, isLoading, repos, getUserRepos} = useContext(GithubContext)
-  const params = useParams()
+  const { user, dispatch, isLoading, repos } = useContext(GithubContext)
+  const params = useParams();
+
+  useEffect(() =>{
+    dispatch({type: "SET_LOADING"});
+    const getUserData = async() =>{
+      const user = await getUser(params.login);
+      dispatch({type: "GET_USER", payload: user });
+      const repos = await getUserRepos(params.login);
+      dispatch({type: "GET_REPOS", payload: repos})
+    }
+    getUserData();
+ }, [dispatch, params.login]) // you can add deps if they are not changing vals
 
   const {
     name,
@@ -24,12 +36,6 @@ function User() {
     public_repos,
     public_gists,
     hireable,} = user
-
-  useEffect(() =>{
-    getUser(params.login)
-    getUserRepos(params.login)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   if(isLoading){
     return <Spinner/>
