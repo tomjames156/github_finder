@@ -15,6 +15,7 @@
 8. Postman
 
 ### Project Link on Github - [link](https://github.com/tomjames156/github_finder)
+### Link to Live Site - [link](https://github-finder-w-app.netlify.app)
 
 ### Building this project i learnt about
 * useReduce hook and reducers
